@@ -5,6 +5,8 @@ import Pagination from "./Pagination";
 import FindById from "./FindById";
 import {fetchGetMarines} from "../utils/spaceMarinesApi"
 import AddMarine from "./AddMarine";
+import UpdateMarine from "./UpdateMarine";
+import DeleteMarine from "./DeleteMarine";
 import AddStarship from "./AddStarship";
 import SortBy from "./SortBy";
 import OrderBy from "./OrderBy";
@@ -76,8 +78,10 @@ const Template = () => {
     return (
         <div>
             <div className="buttons-container">
-                <FindById marines={marines} setMarines={setMarines} updateContent={updateContent} alertWithMessage={alertWithMessage}/>
                 <AddMarine updateContent={updateContent} alertWithMessage={alertWithMessage}/>
+                <UpdateMarine updateContent={updateContent} alertWithMessage={alertWithMessage}/>
+                <FindById marines={marines} setMarines={setMarines} updateContent={updateContent} alertWithMessage={alertWithMessage}/>
+                <DeleteMarine updateContent={updateContent} alertWithMessage={alertWithMessage}/>
                 <AddStarship alertWithMessage={alertWithMessage}/>
                 <SortBy setSortBy={setSortBy} updateContent={updateContent}/>
                 <OrderBy setUpperOrder={changeOrder}/>
@@ -111,13 +115,6 @@ const Template = () => {
                 </table>
             </div>
             <div className="underTableContainer">
-                <div className="buttons-container">
-                    <FindById marines={marines} setMarines={setMarines} updateContent={updateContent} alertWithMessage={alertWithMessage}/>
-                    <AddMarine updateContent={updateContent} alertWithMessage={alertWithMessage}/>
-                    <AddStarship alertWithMessage={alertWithMessage}/>
-                    <SortBy setSortBy={setSortBy} updateContent={updateContent}/>
-                    <OrderBy setUpperOrder={changeOrder}/>
-                </div>
                 <div className="alertContainer" hidden={hiddenAlert}>
                     <div className="alert">
                         <div>

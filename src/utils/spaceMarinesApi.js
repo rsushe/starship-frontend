@@ -6,7 +6,7 @@ const BASE_SPACE_MARINE_SERVICE_URL = "https://localhost:8443/space-marines-api-
 export const fetchGetMarines = async (setMarines, setPage, sortBy, order, limit, page, filters, alertWithMessage) => {
     const url = new URL(BASE_SPACE_MARINE_SERVICE_URL + "/spacemarines");
     let params = {
-        limit: limit,
+        size: limit,
         page: page,
         orderBy: order,
     }
@@ -130,14 +130,17 @@ export const fetchAdd = async (data, alertWithMessage) => {
 export const fetchUpdateById = async (id, data, alertWithMessage) => {
     if (id !== null && data !== null) {
         const url = new URL(BASE_SPACE_MARINE_SERVICE_URL + "/spacemarines/" + id);
+
+        const options = { compact: true, ignoreComment: true, spaces: 4 };
+
         await makeFetch(
             url,
             {
                 method: 'PUT',
                 headers: {
-                    "Content-Type": "application/json",
+                    "Content-Type": "application/xml",
                 },
-                body: JSON.stringify(data)
+                body: js2xml(data, options)
             },
             _ => {
             },

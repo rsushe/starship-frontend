@@ -1,12 +1,12 @@
 import {useState} from "react";
-import {fetchMarineById} from "../utils/spaceMarinesApi";
+import {fetchSearchByName} from "../utils/spaceMarinesApi";
 
-const FindById = ({setMarines, updateContent, alertWithMessage}) => {
+const SearchByName = ({setMarines, updateContent, alertWithMessage}) => {
 
     const [value, setValue] = useState("")
 
     const onFindClick = () => {
-        fetchMarineById(value, setMarines, alertWithMessage)
+        fetchSearchByName(value, setMarines, alertWithMessage)
     }
 
     const onResetClick = () => {
@@ -15,11 +15,11 @@ const FindById = ({setMarines, updateContent, alertWithMessage}) => {
     }
 
     return <details className="dropdown">
-        <summary className="m-1 btn">Find by id</summary>
+        <summary className="m-1 btn">Search by name</summary>
         <ul className="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52">
             <div>
                 <div>
-                    <input type="number" placeholder={"id"} value={value}
+                    <input type="text" placeholder={"name"} value={value}
                            onChange={e => setValue(e.target.value)}></input>
                 </div>
                 <button className={"btn btn-outline btn-success"} onClick={onFindClick}>Find</button>
@@ -29,4 +29,4 @@ const FindById = ({setMarines, updateContent, alertWithMessage}) => {
     </details>
 }
 
-export default FindById
+export default SearchByName

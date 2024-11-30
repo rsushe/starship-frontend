@@ -9,6 +9,8 @@ const Filters = ({setFilters, updateContent}) => {
 
     const onResetClick = () => {
         setInputFields([''])
+        setFilters([''])
+        updateContent()
     }
 
     const handleInputChange = (index, event) => {
@@ -31,7 +33,7 @@ const Filters = ({setFilters, updateContent}) => {
                 <div>
                     {inputFields.map((input, index) => {
                         return (
-                            <input name='filter' placeholder='Filter' value={input.filter} onChange={event => handleInputChange(index, event)}/>
+                            <input name='filter' placeholder='Filter' value={input} onChange={event => handleInputChange(index, event)}/>
                         )
                     })}
                 </div>

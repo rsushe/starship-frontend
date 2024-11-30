@@ -11,6 +11,9 @@ import AddStarship from "./AddStarship";
 import SortBy from "./SortBy";
 import OrderBy from "./OrderBy";
 import Filters from "./Filters"
+import SearchByName from "./SearchByName";
+import GroupByCreationDate from "./GroupByCreationDate"
+import CountByCategory from "./CountByCategory";
 
 const Template = () => {
 
@@ -64,6 +67,9 @@ const Template = () => {
                 <AddMarine updateContent={updateContent} alertWithMessage={alertWithMessage}/>
                 <UpdateMarine updateContent={updateContent} alertWithMessage={alertWithMessage}/>
                 <FindById marines={marines} setMarines={setMarines} updateContent={updateContent} alertWithMessage={alertWithMessage}/>
+                <SearchByName marines={marines} setMarines={setMarines} updateContent={updateContent} alertWithMessage={alertWithMessage}/>
+                <GroupByCreationDate alertWithMessage={alertWithMessage}/>
+                <CountByCategory alertWithMessage={alertWithMessage}/>
                 <DeleteMarine updateContent={updateContent} alertWithMessage={alertWithMessage}/>
                 <AddStarship alertWithMessage={alertWithMessage}/>
                 <SortBy setSortBy={setSortBy} updateContent={updateContent}/>

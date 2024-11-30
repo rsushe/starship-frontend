@@ -1,11 +1,14 @@
 const alertBadRequest = (response, alertWithMessage) => {
-    response.json()
-        .then(resp => {
-                let msg = response.status + ": " + resp["message"]
-                alertWithMessage(msg)
-                console.log("error", msg);
-            }
-        )
+    response.text()
+        .then(text => {
+            const parser = new DOMParser();
+            const xml = parser.parseFromString(text, "application/xml");
+
+            let msg = response.status + ": " + xml.getElementsByTagName("message")[0].textContent
+            alertWithMessage(msg)
+            console.log("error", msg);
+        }
+    )
 }
 
 const makeFetch = async (url, requestInit, ifSuccess, alertWithMessage) => {

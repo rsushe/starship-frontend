@@ -3,25 +3,31 @@ import {fetchAdd} from "../utils/spaceMarinesApi";
 
 const AddMarine = ({updateContent, alertWithMessage}) => {
 
-    // const [id, setId] = useState("")
-    const [name, setName] = useState("myaso")
+    const [name, setName] = useState("romka")
     const [coordinates, setCoordinates] = useState({x: 1, y: 1})
     const [health, setHealth] = useState(1)
-    const [loyal, setLoyal] = useState(false)
-    const [height, setHeight] = useState(52)
-    const [category, setCategory] = useState("DREADNOUGHT")
-    const [chapter, setChapter] = useState({name: "chipi", world: "chapa"})
+    const [category, setCategory] = useState("SCOUT")
+    const [weaponType, setWeaponType] = useState("HEAVY_BOLTGUN")
+    const [meleeWeapon, setMeleeWeapon] = useState("CHAIN_SWORD")
+    const [chapter, setChapter] = useState(
+    {
+            name: "chipi",
+            parentLegion: null,
+            marinesCount: 1,
+            world: null
+        }
+    )
 
     const onCreateButtonClick = () => {
-        fetchAdd({
+        fetchAdd({ spaceMarineRequestDto : {
             name: name,
             coordinates: coordinates,
             health: health,
-            loyal: loyal,
-            height: height,
             category: category,
-            chapter: chapter,
-        }, alertWithMessage).then(() => updateContent())
+            weaponType: weaponType,
+            meleeWeapon:meleeWeapon,
+            chapterRequestDto: chapter,
+        }}, alertWithMessage).then(() => updateContent())
     }
 
     return <details className="dropdown">
@@ -39,26 +45,62 @@ const AddMarine = ({updateContent, alertWithMessage}) => {
                            placeholder={"coordinates.y"}/>
                     <label htmlFor="healthArea">health</label>
                     <input type="number" id={"healthArea"} value={health} onChange={e => setHealth(e.target.value)} placeholder={"area"}/>
-                    <label htmlFor="loyalArea">loyal </label><br/>
-                    <input type="checkbox" id={"loyalArea"} value={loyal} onChange={e => setLoyal(e.target.checked)} /><br/>
-                    <label htmlFor="heightArea">height</label>
-                    <input type="number" id={"heightArea"} value={height} onChange={e => setHeight(e.target.value)} placeholder={"height"}/>
                     <label htmlFor="categoryArea">category</label>
                     <select className='select' onChange={(e) => setCategory(e.target.value)} value={category} required>
-                        {['DREADNOUGHT', 'INCEPTOR', 'SUPPRESSOR', 'TERMINATOR', 'LIBRARIAN'].map((enumCategory) => {
+                        {['SCOUT', 'TACTICAL', 'TERMINATOR', 'CHAPLAIN', 'HELIX'].map((enumCategory) => {
                             return (
                                 <option value={enumCategory} key={enumCategory}>{enumCategory}</option>
                             )
                         })}
                     </select><br/>
-                    <label htmlFor="chapternameArea">chapter.name</label>
-                    <textarea id={"chapternameArea"} value={chapter.name} onChange={e => setChapter({
+
+                    <label htmlFor="weaponTypeArea">weaponType</label>
+                    <select className='select' onChange={(e) => setWeaponType(e.target.value)} value={weaponType} required>
+                        {['HEAVY_BOLTGUN', 'MELTAGUN', 'COMBI_PLASMA_GUN', 'INFERNO_PISTOL', 'MULTI_MELTA'].map((enumWeaponType) => {
+                            return (
+                                <option value={enumWeaponType} key={enumWeaponType}>{enumWeaponType}</option>
+                            )
+                        })}
+                    </select><br/>
+
+                    <label htmlFor="meleeWeaponArea">meleeWeapon</label>
+                    <select className='select' onChange={(e) => setMeleeWeapon(e.target.value)} value={meleeWeapon} required>
+                        {['CHAIN_SWORD', 'POWER_SWORD', 'LIGHTING_CLAW', 'POWER_FIST'].map((meleeWeaponType) => {
+                            return (
+                                <option value={meleeWeaponType} key={meleeWeaponType}>{meleeWeaponType}</option>
+                            )
+                        })}
+                    </select><br/>
+
+                    <label htmlFor="chapterNameArea">chapter.name</label>
+                    <textarea id={"chapterNameArea"} value={chapter.name} onChange={e => setChapter({
                         name: e.target.value,
+                        parentLegion: chapter.parentLegion,
+                        marinesCount: chapter.marinesCount,
                         world: chapter.world,
                     })} placeholder={"chapter.name"}/>
-                    <label htmlFor="chapterworldArea">chapter.world</label>
-                    <textarea id={"chapterworldArea"} value={chapter.world} onChange={e => setChapter({
+
+                    <label htmlFor="chapterParentLegionArea">chapter.parentLegion</label>
+                    <textarea id={"chapterParentLegionArea"} value={chapter.parentLegion} onChange={e => setChapter({
                         name: chapter.name,
+                        parentLegion: e.target.value,
+                        marinesCount: chapter.marinesCount,
+                        world: chapter.world,
+                    })} placeholder={"chapter.parentLegion"}/>
+
+                    <label htmlFor="chapterMarinesCountArea">chapter.marinesCount</label>
+                    <textarea id={"chapterMarinesCountArea"} value={chapter.marinesCount} onChange={e => setChapter({
+                        name: chapter.name,
+                        parentLegion: chapter.parentLegion,
+                        marinesCount: e.target.value,
+                        world: chapter.world,
+                    })} placeholder={"chapter.marinesCount"}/>
+
+                    <label htmlFor="chapterWorldArea">chapter.world</label>
+                    <textarea id={"chapterWorldArea"} value={chapter.world} onChange={e => setChapter({
+                        name: chapter.name,
+                        parentLegion: chapter.parentLegion,
+                        marinesCount: chapter.marinesCount,
                         world: e.target.value,
                     })} placeholder={"chapter.world"}/>
                 </div>

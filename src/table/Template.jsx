@@ -1,15 +1,18 @@
 import './css/Template.css'
 import {useEffect, useState} from "react";
 import TableContent from "./Content";
+import Pagination from "./Pagination";
 import FindById from "./FindById";
 import {fetchGetMarines} from "../utils/spaceMarinesApi"
 import AddMarine from "./AddMarine";
 import AddStarship from "./AddStarship";
+import SortBy from "./SortBy";
+import OrderBy from "./OrderBy";
 
 const Template = () => {
 
     const [limit, setLimit] = useState(10)
-    const [offset, setOffset] = useState(0)
+    const [page, setPage] = useState(1)
     const [order, setOrder] = useState("ASC")
     const [sortBy, setSortBy] = useState(["ID"])
     const [filters, setFilters] = useState({
@@ -35,7 +38,7 @@ const Template = () => {
 
     const updateContent = () => {
         console.log("Filters: " + filters.toString())
-        fetchGetMarines(setMarines, setOffset, sortBy, order, limit, offset, filters, alertWithMessage);
+        fetchGetMarines(setMarines, setPage, sortBy, order, limit, page, filters, alertWithMessage);
         console.log("Marines" + marines.toString())
     }
 
@@ -58,7 +61,7 @@ const Template = () => {
 
     useEffect(() => {
         updateContent()
-    }, [limit, offset, sortBy, filters]);
+    }, [limit, page, sortBy, filters]);
 
     const sortBys = ["id", "name", "creationDate", "health", "height", "category"]
 
@@ -76,6 +79,9 @@ const Template = () => {
                 <FindById marines={marines} setMarines={setMarines} updateContent={updateContent} alertWithMessage={alertWithMessage}/>
                 <AddMarine updateContent={updateContent} alertWithMessage={alertWithMessage}/>
                 <AddStarship alertWithMessage={alertWithMessage}/>
+                <SortBy setSortBy={setSortBy} updateContent={updateContent}/>
+                <OrderBy setUpperOrder={changeOrder}/>
+                <Pagination limit={limit} page={page} setPage={setPage}/>
             </div>
             <div className="table-container">
                 <table className="table">
@@ -105,6 +111,13 @@ const Template = () => {
                 </table>
             </div>
             <div className="underTableContainer">
+                <div className="buttons-container">
+                    <FindById marines={marines} setMarines={setMarines} updateContent={updateContent} alertWithMessage={alertWithMessage}/>
+                    <AddMarine updateContent={updateContent} alertWithMessage={alertWithMessage}/>
+                    <AddStarship alertWithMessage={alertWithMessage}/>
+                    <SortBy setSortBy={setSortBy} updateContent={updateContent}/>
+                    <OrderBy setUpperOrder={changeOrder}/>
+                </div>
                 <div className="alertContainer" hidden={hiddenAlert}>
                     <div className="alert">
                         <div>

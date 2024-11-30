@@ -1,6 +1,5 @@
 import './App.css';
 import Template from "./table/Template";
-import {useState} from "react";
 
 function App() {
   return (

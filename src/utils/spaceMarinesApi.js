@@ -1,30 +1,14 @@
 import makeFetch from "./makeFetch";
+import { js2xml } from 'xml-js';
 
 const BASE_SPACE_MARINE_SERVICE_URL = "https://localhost:8443/space-marines-api-0.0.1-SNAPSHOT/api/v1"
 
-export const fetchGetMarines = async (setMarines, setOffset, sortBy, order, limit, offset, filters, alertWithMessage) => {
+export const fetchGetMarines = async (setMarines, setPage, sortBy, order, limit, page, filters, alertWithMessage) => {
     const url = new URL(BASE_SPACE_MARINE_SERVICE_URL + "/spacemarines");
     let params = {
         limit: limit,
-        offset: offset,
-        sortDirection: order,
-        minId: filters.minId,
-        maxId: filters.maxId,
-        name: filters.name,
-        minX: filters.minX,
-        maxX: filters.maxX,
-        minY: filters.minY,
-        maxY: filters.maxY,
-        minHealth: filters.minHealth,
-        maxHealth: filters.maxHealth,
-        loyal: filters.loyal,
-        minHeight: filters.minHeight,
-        maxHeight: filters.maxHeight,
-        category: filters.category,
-        minCreationDate: filters.minCreationDate,
-        maxCreationDate: filters.maxCreationDate,
-        chapterName: filters.chapterName,
-        chapterWorld: filters.chapterWorld,
+        page: page,
+        orderBy: order,
     }
 
     try {
@@ -46,31 +30,28 @@ export const fetchGetMarines = async (setMarines, setOffset, sortBy, order, limi
             () => {},
             text => {
                 const parser = new DOMParser();
-                // Парсим строку XML
                 const xml = parser.parseFromString(text, "application/xml");
 
-                // Извлекаем данные из XML, например, все элементы <spacemarine>
                 const spaceMarines = Array.from(xml.getElementsByTagName('data')).map(sm => {
-                        console.log('54', sm.getElementsByTagName('coordinates'))
-                        return {
-                            id: sm.getElementsByTagName('id')[0].textContent,
-                            name: sm.getElementsByTagName('name')[0].textContent,
-                            coordinates: {
-                                x: sm.getElementsByTagName('coordinates')[0].getElementsByTagName('x')[0].textContent,
-                                y: sm.getElementsByTagName('coordinates')[0].getElementsByTagName('y')[0].textContent
-                            },
-                            creationDate: sm.getElementsByTagName('creationDate')[0].textContent,
-                            health: sm.getElementsByTagName('health')[0].textContent,
-                            category: sm.getElementsByTagName('category')[0].textContent,
-                            weaponType: sm.getElementsByTagName('weaponType')[0].textContent,
-                            meleeWeapon: sm.getElementsByTagName('meleeWeapon')[0].textContent,
-                            chapter: {
-                                id: sm.getElementsByTagName('chapter')[0].getElementsByTagName('id')[0].textContent,
-                                name: sm.getElementsByTagName('chapter')[0].getElementsByTagName('name')[0].textContent,
-                                world: sm.getElementsByTagName('chapter')[0].getElementsByTagName('world')[0].textContent
-                            }
-                        };
-                    });
+                    return {
+                        id: sm.getElementsByTagName('id')[0].textContent,
+                        name: sm.getElementsByTagName('name')[0].textContent,
+                        coordinates: {
+                            x: sm.getElementsByTagName('coordinates')[0].getElementsByTagName('x')[0].textContent,
+                            y: sm.getElementsByTagName('coordinates')[0].getElementsByTagName('y')[0].textContent
+                        },
+                        creationDate: sm.getElementsByTagName('creationDate')[0].textContent,
+                        health: sm.getElementsByTagName('health')[0].textContent,
+                        category: sm.getElementsByTagName('category')[0].textContent,
+                        weaponType: sm.getElementsByTagName('weaponType')[0].textContent,
+                        meleeWeapon: sm.getElementsByTagName('meleeWeapon')[0].textContent,
+                        chapter: {
+                            id: sm.getElementsByTagName('chapter')[0].getElementsByTagName('id')[0].textContent,
+                            name: sm.getElementsByTagName('chapter')[0].getElementsByTagName('name')[0].textContent,
+                            world: sm.getElementsByTagName('chapter')[0].getElementsByTagName('world')[0].textContent
+                        }
+                    };
+                });
 
                 setMarines(spaceMarines);
             },
@@ -83,14 +64,42 @@ export const fetchGetMarines = async (setMarines, setOffset, sortBy, order, limi
 
 export const fetchMarineById = async (value, setMarines, alertWithMessage) => {
     if (value !== "") {
-        const url = new URL(BASE_SPACE_MARINE_SERVICE_URL + "/space-marines/" + value);
-        await makeFetch(url, {}, flat => setMarines([flat]), alertWithMessage)
+        const url = new URL(BASE_SPACE_MARINE_SERVICE_URL + "/spacemarines/" + value);
+        await makeFetch(
+            url,
+            {},
+            text => {
+                const parser = new DOMParser();
+                const xml = parser.parseFromString(text, "application/xml");
+
+                const spaceMarine = {
+                    id: xml.getElementsByTagName('id')[0].textContent,
+                    name: xml.getElementsByTagName('name')[0].textContent,
+                    coordinates: {
+                        x: xml.getElementsByTagName('coordinates')[0].getElementsByTagName('x')[0].textContent,
+                        y: xml.getElementsByTagName('coordinates')[0].getElementsByTagName('y')[0].textContent
+                    },
+                    creationDate: xml.getElementsByTagName('creationDate')[0].textContent,
+                    health: xml.getElementsByTagName('health')[0].textContent,
+                    category: xml.getElementsByTagName('category')[0].textContent,
+                    weaponType: xml.getElementsByTagName('weaponType')[0].textContent,
+                    meleeWeapon: xml.getElementsByTagName('meleeWeapon')[0].textContent,
+                    chapter: {
+                        id: xml.getElementsByTagName('chapter')[0].getElementsByTagName('id')[0].textContent,
+                        name: xml.getElementsByTagName('chapter')[0].getElementsByTagName('name')[0].textContent,
+                        world: xml.getElementsByTagName('chapter')[0].getElementsByTagName('world')[0].textContent
+                    }
+                };
+                setMarines([spaceMarine])
+            },
+            alertWithMessage
+        )
     }
 }
 
 export const fetchDeleteById = async (id, alertWithMessage) => {
     if (id !== "") {
-        const url = new URL(BASE_SPACE_MARINE_SERVICE_URL + "/space-marines/" + id);
+        const url = new URL(BASE_SPACE_MARINE_SERVICE_URL + "/spacemarines/" + id);
         await makeFetch(url, {method: 'DELETE'}, () => {
         }, alertWithMessage)
     }
@@ -98,15 +107,18 @@ export const fetchDeleteById = async (id, alertWithMessage) => {
 
 export const fetchAdd = async (data, alertWithMessage) => {
     if (data !== null) {
-        const url = new URL(BASE_SPACE_MARINE_SERVICE_URL + "/space-marines");
+        const url = new URL(BASE_SPACE_MARINE_SERVICE_URL + "/spacemarines");
+
+        const options = { compact: true, ignoreComment: true, spaces: 4 };
+
         await makeFetch(
             url,
             {
                 method: 'POST',
                 headers: {
-                    "Content-Type": "application/json",
+                    "Content-Type": "application/xml",
                 },
-                body: JSON.stringify(data)
+                body: js2xml(data, options)
             },
             _ => {
             },
@@ -117,7 +129,7 @@ export const fetchAdd = async (data, alertWithMessage) => {
 
 export const fetchUpdateById = async (id, data, alertWithMessage) => {
     if (id !== null && data !== null) {
-        const url = new URL(BASE_SPACE_MARINE_SERVICE_URL + "/space-marines/" + id);
+        const url = new URL(BASE_SPACE_MARINE_SERVICE_URL + "/spacemarines/" + id);
         await makeFetch(
             url,
             {
@@ -136,18 +148,19 @@ export const fetchUpdateById = async (id, data, alertWithMessage) => {
 
 export const fetchDeleteOneByCategory = async (category, alertWithMessage) => {
     if (category !== null) {
-        const url = new URL(BASE_SPACE_MARINE_SERVICE_URL + "/space-marines/categories/" + category);
-        await makeFetch(url, {method: 'DELETE'}, _ => {}, alertWithMessage)
+        const url = new URL(BASE_SPACE_MARINE_SERVICE_URL + "/spacemarines/categories/" + category);
+        await makeFetch(url, {method: 'DELETE'}, _ => {
+        }, alertWithMessage)
     }
 }
 
 export const fetchGetLoyalist = async (alertWithMessage) => {
-    const url = new URL(BASE_SPACE_MARINE_SERVICE_URL + "/space-marines/loyalists");
+    const url = new URL(BASE_SPACE_MARINE_SERVICE_URL + "/spacemarines/loyalists");
     await makeFetch(url, {method: "GET"}, resp => alertWithMessage("Loyalist id: " + resp["id"]), alertWithMessage)
 }
 
 export const fetchGetCountOfHealthyMarines = async (minHealth, alertWithMessage) => {
-    const url = new URL(BASE_SPACE_MARINE_SERVICE_URL + "/space-marines/amount");
+    const url = new URL(BASE_SPACE_MARINE_SERVICE_URL + "/spacemarines/amount");
     let params = {minHealth: minHealth}
     url.search = new URLSearchParams(params).toString()
     await makeFetch(url, {method: "GET"}, resp => alertWithMessage("Amount: " + resp["amount"]), alertWithMessage)

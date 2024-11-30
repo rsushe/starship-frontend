@@ -14,6 +14,7 @@ export const fetchGetMarines = async (setMarines, setPage, sortBy, order, limit,
     try {
         let searchParams = new URLSearchParams(params)
         sortBy.forEach(value => searchParams.append('sortBy', value))
+        filters.forEach(value => searchParams.append('filters', value))
         let keysForDel = [];
         searchParams.forEach((value, key) => {
             if (value === "null" || value === "") {

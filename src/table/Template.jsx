@@ -10,6 +10,7 @@ import DeleteMarine from "./DeleteMarine";
 import AddStarship from "./AddStarship";
 import SortBy from "./SortBy";
 import OrderBy from "./OrderBy";
+import Filters from "./Filters"
 
 const Template = () => {
 
@@ -17,25 +18,7 @@ const Template = () => {
     const [page, setPage] = useState(1)
     const [order, setOrder] = useState("ASC")
     const [sortBy, setSortBy] = useState(["ID"])
-    const [filters, setFilters] = useState({
-        minId: null,
-        maxId: null,
-        name: null,
-        minX: null,
-        maxX: null,
-        minY: null,
-        maxY: null,
-        minHealth: null,
-        maxHealth: null,
-        loyal: null,
-        minHeight: null,
-        maxHeight: null,
-        category: null,
-        minCreationDate: null,
-        maxCreationDate: null,
-        chapterName: null,
-        chapterWorld: null,
-    })
+    const [filters, setFilters] = useState([''])
     const [marines, setMarines] = useState([])
 
     const updateContent = () => {
@@ -85,6 +68,7 @@ const Template = () => {
                 <AddStarship alertWithMessage={alertWithMessage}/>
                 <SortBy setSortBy={setSortBy} updateContent={updateContent}/>
                 <OrderBy setUpperOrder={changeOrder}/>
+                <Filters setFilters={setFilters} updateContent={updateContent}/>
                 <Pagination limit={limit} page={page} setPage={setPage}/>
             </div>
             <div className="table-container">
